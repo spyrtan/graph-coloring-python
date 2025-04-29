@@ -41,7 +41,7 @@ def run_experiment(graph: nx.Graph) -> dict:
     }
 
     # Brute Force (ONLY if small graph)
-    if len(graph.nodes) <= 8:
+    if len(graph.nodes) <= 16:
         start = time.time()
         coloring = brute_force_coloring(graph)
         duration = time.time() - start
@@ -57,7 +57,7 @@ def run_experiment(graph: nx.Graph) -> dict:
         }
 
     # Backtracking (ONLY if small/medium graph)
-    if len(graph.nodes) <= 12:
+    if len(graph.nodes) <= 30:
         start = time.time()
         coloring = backtracking_coloring(graph)
         duration = time.time() - start

@@ -68,10 +68,10 @@ def visualize_colorings(graph):
     draw_graph(graph, greedy_smallest_last(graph), "Greedy SL Coloring")
     draw_graph(graph, greedy_saturation_largest_first(graph), "Greedy SLF Coloring")
 
-    if len(graph.nodes) <= 8:
+    if len(graph.nodes) <= 16:
         draw_graph(graph, brute_force_coloring(graph), "Brute Force Coloring")
 
-    if len(graph.nodes) <= 12:
+    if len(graph.nodes) <= 30:
         draw_graph(graph, backtracking_coloring(graph), "Backtracking Coloring")
 
 def plot_runtime_comparison(results):
