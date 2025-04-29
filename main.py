@@ -1,5 +1,6 @@
 import os
 import csv
+import matplotlib.pyplot as plt
 from src.graph_generator import get_graph
 from src.experiment import run_experiment
 from src.greedy_algorithms import (
@@ -11,7 +12,6 @@ from src.brute_force import brute_force_coloring
 from src.backtracking import backtracking_coloring
 from src.visualization import draw_graph
 
-
 def prompt_graph_type():
     print("Select graph type:")
     print("1 - Random graph")
@@ -21,7 +21,6 @@ def prompt_graph_type():
     choice = input("Enter choice (1-4): ")
     types = {"1": "random", "2": "grid", "3": "complete", "4": "tree"}
     return types.get(choice, "random")
-
 
 def get_graph_parameters(graph_type):
     if graph_type == "grid":
@@ -36,8 +35,7 @@ def get_graph_parameters(graph_type):
             params["edge_prob"] = edge_prob
         return params
 
-
-def save_results_to_csv(results, filename="results/graph_coloring_results.csv", metadata=None):
+def save_results_to_csv(results, filename="data/graph_coloring_results.csv", metadata=None):
     os.makedirs("results", exist_ok=True)
     file_exists = os.path.isfile(filename)
 
@@ -52,14 +50,16 @@ def save_results_to_csv(results, filename="results/graph_coloring_results.csv", 
             for algorithm, data in results.items():
                 size = metadata.get("Size", "N/A")
                 graph_type = metadata.get("GraphType", "unknown")
-                writer.writerow([graph_type, size, algorithm, data["colors"], data["time"]])
-                print(f"[DEBUG] Saved: {graph_type}, {size}, {algorithm}, {data['colors']}, {data['time']:.6f}")
+                colors = data["colors"] if data["colors"] != "N/A" else "N/A"
+                time = f"{data['time']:.6f}" if isinstance(data["time"], (int, float)) else "N/A"
+
+                writer.writerow([graph_type, size, algorithm, colors, time])
+                print(f"[DEBUG] Saved: {graph_type}, {size}, {algorithm}, {colors}, {time}")
 
         print("[INFO] Results saved successfully ✅")
 
     except Exception as e:
         print(f"[ERROR] Failed to save results: {e}")
-
 
 def visualize_colorings(graph):
     print("\n[INFO] Showing colorized graphs for each algorithm...")
@@ -74,6 +74,28 @@ def visualize_colorings(graph):
     if len(graph.nodes) <= 12:
         draw_graph(graph, backtracking_coloring(graph), "Backtracking Coloring")
 
+def plot_runtime_comparison(results):
+    algorithms = []
+    times = []
+
+    for algo, res in results.items():
+        if isinstance(res["time"], (int, float)):
+            algorithms.append(algo)
+            times.append(res["time"])
+
+    plt.figure(figsize=(10, 6))
+    plt.bar(algorithms, times, color="skyblue")
+    plt.title("Porównanie czasu działania algorytmów")
+    plt.xlabel("Algorytm")
+    plt.ylabel("Czas [sekundy]")
+    plt.xticks(rotation=45)
+    plt.tight_layout()
+
+    plot_filename = "results/runtime_comparison.png"
+    plt.savefig(plot_filename)
+    print(f"[INFO] Wykres zapisany do: {plot_filename}")
+
+    plt.show()
 
 def main():
     print("Graph Coloring Experiment Runner")
@@ -89,7 +111,9 @@ def main():
         results = run_experiment(graph)
 
         for algo, res in results.items():
-            print(f"{algo:15} | Colors: {res['colors']} | Time: {res['time']:.6f} sec")
+            colors = res['colors'] if res['colors'] != "N/A" else "N/A"
+            time = f"{res['time']:.6f}" if isinstance(res['time'], (int, float)) else "N/A"
+            print(f"{algo:15} | Colors: {colors} | Time: {time} sec")
 
         if save:
             metadata = {
@@ -98,10 +122,9 @@ def main():
             }
             save_results_to_csv(results, metadata=metadata)
 
-        # Only visualize on first run to avoid spamming windows
         if i == 0:
             visualize_colorings(graph)
-
+            plot_runtime_comparison(results)
 
 if __name__ == "__main__":
     main()

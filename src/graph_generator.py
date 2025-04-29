@@ -15,7 +15,7 @@ def generate_complete_graph(num_nodes: int) -> nx.Graph:
 
 def generate_tree_graph(num_nodes: int) -> nx.Graph:
     """Generates a random tree with a specified number of nodes."""
-    return nx.random_tree(num_nodes)
+    return nx.balanced_tree(2, num_nodes - 1)
 
 def get_graph(graph_type: str, **kwargs) -> nx.Graph:
     """

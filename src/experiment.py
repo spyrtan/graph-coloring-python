@@ -10,13 +10,7 @@ from src.greedy_algorithms import (
 from src.brute_force import brute_force_coloring
 from src.backtracking import backtracking_coloring
 
-
 def run_experiment(graph: nx.Graph) -> dict:
-    """
-    Runs all graph coloring algorithms on a given graph and records the results.
-
-    Returns a dictionary with the number of colors used and computation time for each algorithm.
-    """
     results = {}
 
     # Greedy - Largest First
@@ -46,7 +40,7 @@ def run_experiment(graph: nx.Graph) -> dict:
         "time": duration
     }
 
-    # Brute Force - only for small graphs
+    # Brute Force (ONLY if small graph)
     if len(graph.nodes) <= 8:
         start = time.time()
         coloring = brute_force_coloring(graph)
@@ -56,9 +50,13 @@ def run_experiment(graph: nx.Graph) -> dict:
             "time": duration
         }
     else:
-        results["Brute Force"] = {"colors": None, "time": None}
+        print(f"[INFO] Skipping Brute Force: graph too large (nodes = {len(graph.nodes)})")
+        results["Brute Force"] = {
+            "colors": "N/A",
+            "time": "N/A"
+        }
 
-    # Backtracking - only for small/medium graphs
+    # Backtracking (ONLY if small/medium graph)
     if len(graph.nodes) <= 12:
         start = time.time()
         coloring = backtracking_coloring(graph)
@@ -68,14 +66,10 @@ def run_experiment(graph: nx.Graph) -> dict:
             "time": duration
         }
     else:
-        results["Backtracking"] = {"colors": None, "time": None}
+        print(f"[INFO] Skipping Backtracking: graph too large (nodes = {len(graph.nodes)})")
+        results["Backtracking"] = {
+            "colors": "N/A",
+            "time": "N/A"
+        }
 
     return results
-
-
-if __name__ == "__main__":
-    # Example run
-    g = get_graph("random", num_nodes=6, edge_prob=0.4)
-    summary = run_experiment(g)
-    for algo, stats in summary.items():
-        print(f"{algo:15} | Colors: {stats['colors']} | Time: {stats['time']:.6f} sec")
