@@ -6,7 +6,7 @@ A Python-based project focused on solving the graph coloring problem using discr
 
 This repository contains a modular implementation of various graph coloring algorithms.
 
-## Project Structure
+## Project Structure 
 
 ```plaintext
 graph_coloring_python/
