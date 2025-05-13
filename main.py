@@ -51,7 +51,7 @@ def save_results_to_csv(results, filename="data/graph_coloring_results.csv", met
                 size = metadata.get("Size", "N/A")
                 graph_type = metadata.get("GraphType", "unknown")
                 colors = data["colors"] if data["colors"] != "N/A" else "N/A"
-                time = f"{data['time']:.6f}" if isinstance(data["time"], (int, float)) else "N/A"
+                time = f"{data['time']:.6f}".replace('.', ',') if isinstance(data["time"], (int, float)) else "N/A"
 
                 writer.writerow([graph_type, size, algorithm, colors, time])
                 print(f"[DEBUG] Saved: {graph_type}, {size}, {algorithm}, {colors}, {time}")
